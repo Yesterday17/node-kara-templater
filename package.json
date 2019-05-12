@@ -1,0 +1,20 @@
+{
+  "name": "kara-templater",
+  "version": "1.0.0",
+  "description": "karaoke templater in aegisub. Aims at learning karaoke template.",
+  "main": "index.js",
+  "bin": {
+    "kara-templater": "./dist/index.js"
+  },
+  "repository": "https://github.com/Yesterday17/node-kara-templater",
+  "author": "Yesterday17 <t@yesterday17.cn>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^12.0.0",
+    "tslint": "^5.16.0",
+    "typescript": "^3.4.5"
+  },
+  "dependencies": {
+    "chalk": "^2.4.2"
+  }
+}
