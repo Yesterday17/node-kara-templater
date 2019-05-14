@@ -108,4 +108,116 @@ export class StyleSubtitle extends Subtitle {
   vertical: any;
 }
 
+export class DialogueSubtitle extends Subtitle {
+  // Style class
+  class: "dialogue";
+
+  // Section
+  section: "[Events]" | string;
+
+  // Boolean, true if the line is a Comment line rather than Dialogue.
+  comment: boolean;
+
+  // Layer of the line.
+  // FIXME: type
+  layer: any;
+
+  // Start and end times of the line in milliseconds.
+  start_time: number;
+  end_time: number;
+
+  // Name of the style used for the line.
+  style: string;
+
+  // Actor field for the line.
+  actor: string;
+
+  // Margin overrides for the line, a zero value means use margin from style.
+  margin_l: number;
+  margin_r: number;
+  margin_t: number;
+  margin_b: number;
+
+  // Effect field of the line.
+  effect: string;
+
+  // [document] Unused.
+  // FIXME:
+  userdata: any;
+
+  // Dialogue text.
+  text: string;
+
+  // Basic added fields, by karaskel.preproc_line_text:
+  // Line text with all override tags and vector drawings removed.
+  text_stripped: string;
+
+  // Duration of the line in milliseconds.
+  duration: number;
+
+  // Array tables of extended karaoke and furigana tables, respectively.
+  // They do not contain sizing and positioning data from the beginning.
+  // FIXME: type
+  kara: any;
+  furi: any;
+
+  // Added fields for positioning, by karaskel.preproc_line_pos:
+  // A convenience alias for line.margin_t.
+  get margin_v() {
+    return this.margin_t;
+  }
+  set margin_v(value: number) {
+    this.margin_t = value;
+  }
+
+  // Valid margin values for the line.
+  // If the corresponding margin override for the line is non-zero,
+  // that value is used, otherwise the value defined in the style is used.
+  eff_margin_l: number;
+  eff_margin_r: number;
+  eff_margin_t: number;
+  eff_margin_b: number;
+  get eff_margin_v() {
+    return this.eff_margin_t;
+  }
+  set eff_margin_v(value: number) {
+    this.eff_margin_t = value;
+  }
+
+  // the horizontal alignment of the line, derived from line.styleref.align
+  halign: "left" | "center" | "right";
+
+  // the vertical alignment of the line, derived from line.styleref.align.
+  valign: "top" | "middle" | "bottom";
+
+  // The left edge X coordinate for the line, assuming its given alignment, valid margins and no collision detection.
+  left: number;
+
+  // The line centre X coordinate, assuming its given alignment, valid margins and no collision detection.
+  center: number;
+
+  // The right edge X coordinate for the line, assuming its given alignment, valid margins and no collision detection.
+  right: number;
+
+  // The top edge Y coordinate for the line, assuming its given alignment, valid margins and no collision detection.
+  top: number;
+
+  // The line vertical centre Y coordinate, assuming its given alignment, valid margins and no collision detection line.vcenter is an alias for this.
+  middle: number;
+
+  // The bottom edge Y coordinate for the line, assuming its given alignment, valid margins and no collision detection.
+  bottom: number;
+
+  // X and Y coordinates for the line, suitable for using in a \pos override tag to get the line's original position.
+  x: number;
+  y: number;
+
+  // Added fields for linked list access, only available when using the Classic Advanced skeleton:
+  // Access the dialogue line before and after this one.
+  // These might be nil on the first/last dialogue lines.
+  // Blank lines, style lines, header lines etc. are not included in this linked list.
+  prev: DialogueSubtitle | null;
+  next: DialogueSubtitle | null;
+}
+
 export default Subtitle;
