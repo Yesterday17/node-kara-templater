@@ -1,3 +1,4 @@
+import { InfoSubtitle, StyleSubtitle } from "./aegisub/subtitle";
 import Subtitles from "./aegisub/subtitles";
 
 abstract class Karaskel {
@@ -7,7 +8,7 @@ abstract class Karaskel {
    * Collect styles and metadata from the subs
    * 从各行字幕中收集样式和 metadata 信息
    * @param subs
-   * @param generate_furigana 是否生成振假名
+   * @param generate_furigana 是否会为没有对应假名布局的样式单独生成样式 生成的假名样式永远也不会覆盖存在的样式
    */
   public static collect_head(subs: Subtitles, generate_furigana: boolean) {
     const meta = {
@@ -27,6 +28,7 @@ abstract class Karaskel {
     // 第一步：收集所有存在的样式，并且获得分辨率信息
     subs.forEach((sub, index) => {
       if (sub.class === "style") {
+        const l = sub as StyleSubtitle;
         if (!first_style_line) {
           first_style_line = index;
         }
@@ -35,7 +37,12 @@ abstract class Karaskel {
         styles.n++;
         // styles[styles.n] = sub;
         // styles[sub.name] = sub;
-        // sub.margin_v = sub.margin_t;
+
+        // And also generate furigana styles if wanted
+      } else if (sub.class === "info") {
+        const l = sub as InfoSubtitle;
+        let k = l.key;
+        meta[k] = l.value;
       }
     });
 

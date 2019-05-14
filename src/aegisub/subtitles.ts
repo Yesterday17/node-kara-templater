@@ -1,3 +1,5 @@
+import Subtitle from "./subtitle";
+
 class Subtitles {
   private lua_style = false;
   private subtitles: Subtitle[] = [];
@@ -51,10 +53,38 @@ class Subtitles {
    * @param line
    */
   replace(index: number, line: Subtitle) {
-    if (this.lua_style) {
+    if (this.lua) {
       index--;
     }
-    this.subtitles[index] = line;
+    if (index >= 0 && index < this.subtitles.length) {
+      this.subtitles[index] = line;
+    }
+  }
+
+  /**
+   * 删除一行字幕
+   * @param indexs
+   */
+  delete(...indexs: number[]) {
+    indexs.forEach(index => {
+      if (!this.lua) {
+        index++;
+      }
+      if (index > 0 && index <= this.subtitles.length) {
+        this.subtitles.splice(index, 1);
+      }
+    });
+  }
+
+  /**
+   * 删除一个范围内的字幕
+   * @param first
+   * @param last
+   */
+  deleteRange(first: number, last: number) {
+    for (let i = first; i <= last; i++) {
+      this.delete(i);
+    }
   }
 }
 
