@@ -1,5 +1,6 @@
 import { InfoSubtitle, StyleSubtitle } from "./aegisub/subtitle";
 import Subtitles from "./aegisub/subtitles";
+import { Log } from "./global";
 
 abstract class Karaskel {
   private static furigana_scale = 0.5;
@@ -21,7 +22,7 @@ abstract class Karaskel {
     const styles = {
       n: 0
     };
-    const toinsert = {};
+    const toinsert: StyleSubtitle[] = [];
     let first_style_line = null;
 
     // First pass: collect all existing styles and get resolution info
@@ -35,20 +36,50 @@ abstract class Karaskel {
 
         // Store styles into the style table
         styles.n++;
-        // styles[styles.n] = sub;
-        // styles[sub.name] = sub;
+        styles[styles.n] = l;
+        styles[l.name] = l;
 
         // And also generate furigana styles if wanted
+        if (generate_furigana && !l.name.match("furigana")) {
+          Log.debug(`Creating furigana style for style: ${l.name}`);
+          const fs = Object.assign({}, l);
+          fs.fontsize = l.fontsize * this.furigana_scale;
+          fs.outline = l.outline * this.furigana_scale;
+          fs.shadow = l.shadow * this.furigana_scale;
+          fs.name = l.name + "-furigana";
+
+          // queue to insert in file
+          toinsert.push(fs);
+        }
       } else if (sub.class === "info") {
+        // Also look for script resolution
         const l = sub as InfoSubtitle;
-        let k = l.key;
+        let k = l.key.toLowerCase();
         meta[k] = l.value;
       }
     });
 
+    // Second pass: insert all toinsert styles that don't already exist
+    // 第二步：将所有 toinsert 中没有的样式加入 styles
+    toinsert.forEach(to => {
+      if (!styles[to.name]) {
+        // Insert into styles table
+        styles.n++;
+        styles[styles.n] = to;
+        styles[to.name] = to;
+
+        // And subtitle file
+        subs.insert(first_style_line, to);
+      }
+    });
+
+    // Fix resolution data
+    // if (meta.playresx) {
+    // }
+
     return {
-      meta: "",
-      styles: ""
+      meta,
+      styles
     };
   }
 }
